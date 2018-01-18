@@ -28,7 +28,7 @@ namespace AmIAnA.Tests.Imaging
                 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
             };
 
-            var finder = new FindConnectedComponent();
+            var finder = new BlobFinder();
 
             var rectangles = finder.From(new TestImage(imageData));
 
@@ -53,7 +53,7 @@ namespace AmIAnA.Tests.Imaging
                 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
             };
 
-            var finder = new FindConnectedComponent();
+            var finder = new BlobFinder();
 
             var rectangles = finder.From(new TestImage(imageData));
 
@@ -77,9 +77,22 @@ namespace AmIAnA.Tests.Imaging
 
             public Image BaseImage => throw new NotSupportedException();
 
+            public void Dispose()
+            {
+            }
+
             public Color GetPixel(int x, int y)
             {
                 return imageData[y, x] == 1 ? Color.Black : Color.White;
+            }
+
+            public bool MeetsThreshold(Color color)
+            {
+                var result = color.Name != "White";
+
+                var anotherTest = color.R != Color.White.R && color.B != Color.White.B && color.G != Color.White.G;
+
+                return anotherTest;
             }
         }
     }

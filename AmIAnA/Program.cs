@@ -14,6 +14,8 @@ using System.Windows.Forms;
 
 namespace AmIAnA
 {
+    
+
     class Program
     {
         public static NeuralNetwork neuralNetwork = new NeuralNetwork();
@@ -22,53 +24,38 @@ namespace AmIAnA
         {
             //neuralNetwork.Train();
 
-            var serializedExamples = ReadTrainingSet(ConfigurationManager.AppSettings["trainingImage"]);
+            var action = Console.ReadLine();
 
-
+            if (action == "train")
+            {
+                var serializedExamples = ReadTrainingSet(ConfigurationManager.AppSettings["trainingImage"]);
+            }
+            else
+            {
+                Application.Run(new ImageInput());
+            }
             Console.ReadKey();
         }
 
-        private static Example[] ReadTrainingSet(string trainingSetDirectory)
+        private static IEnumerable<Sample>[] ReadTrainingSet(string trainingSetDirectory)
         {
             var viewer = new ImageViewer();
             Task.Run(() => { Application.Run(viewer); viewer.Show(); });
             var ledgerPath = Path.Combine(trainingSetDirectory, "ledger.txt");
 
             return File.ReadAllLines(ledgerPath)
-                .Select(l => new Example(l, viewer))
-                .ToArray();
-        }
-
-        private class Example
-        {
-            public bool IsAnA { get; set; }
-
-            public Example(string serializedExample, ImageViewer viewer)
-            {
-                var parts = serializedExample.Split(new char[] { ',' });
-                var pathToImage = parts[2];
-
-                using (var image = new Bitmap(pathToImage))
+                .Select(l =>
                 {
-                    var cc = new FindConnectedComponent();
-                    var wrappedImage = new BitmapImage(image);
-
-                    var sw = new Stopwatch();
-                    sw.Start();
-                    var rectangles = cc.From(wrappedImage);
-                    sw.Stop();
-                    Console.WriteLine($"{sw.ElapsedMilliseconds} ms");
-                    viewer.SetImage(wrappedImage);
-
-
-                    foreach (var rec in rectangles)
+                    using (var example = new ImageSampler(l))
                     {
-                        viewer.WriteRectangle(rec);
-                    }
-                }
 
-                IsAnA = parts[0].Trim() == "1";
-            }
+                        example.DrawToViewer(viewer);
+                        var samples = example.GetSamples();
+
+                        return samples;
+                    }
+                })
+                .ToArray();
         }
     }
 }

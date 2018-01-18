@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AmIAnA.Imaging
 {
-    public interface IAddressableImage
+    public interface IAddressableImage : IDisposable
     {
         int Width { get; }
 
@@ -16,5 +16,7 @@ namespace AmIAnA.Imaging
         Image BaseImage { get; }
 
         Color GetPixel(int x, int y);
+
+        bool MeetsThreshold(Color color);
     }
 }

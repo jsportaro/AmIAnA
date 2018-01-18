@@ -8,11 +8,12 @@ using System.Threading.Tasks;
 
 namespace AmIAnA.Imaging
 {
-    public class FindConnectedComponent
+    public class BlobFinder
     {
         int currentLabel = 1;
 
         List<LabeledPixel> labeledPixels = new List<LabeledPixel>();
+        int[,] labels;
         Queue<LabeledPixel> queue = new Queue<LabeledPixel>();
         IAddressableImage Image;
 
@@ -20,45 +21,73 @@ namespace AmIAnA.Imaging
 
         public IEnumerable<Rectangle> From(IAddressableImage image)
         {
+            labels = new int[image.Width, image.Height];
+
             var rectangles = new List<Rectangle>();
             Image = image;
             for (int x = 0; x < image.Width; x++)
             {
                 for (int y = 0; y < image.Height; y++)
                 {
-                    if (MeetsThreshold(Image.GetPixel(x, y)) 
-                        && !labeledPixels.Any(l => l.X == x && l.Y == y))
+                    if (Image.MeetsThreshold(Image.GetPixel(x, y)) 
+                        && labels[x, y] == 0 )
                     {
                         var found = new LabeledPixel(x, y, currentLabel);
-                        labeledPixels.Add(found);
+                        labels[x, y] = currentLabel;
                         if (!queue.Contains(found))
                             queue.Enqueue(found);
-                        
                         ProcessQueue(x, y);
+                    }
+                }
+            }
+
+            return CreateRectangle();
+        }
+
+        private IEnumerable<Rectangle> CreateRectangle()
+        {
+           
+            Dictionary<int, TempRectangle> rectangles = new Dictionary<int, TempRectangle>();
+            for (int x = 0; x < Image.Width; x++)
+            {
+                for (int y = 0; y < Image.Height; y++)
+                {
+                    if (labels[x, y] > 0)
+                    {
+                        if (!rectangles.Keys.Contains(labels[x, y]))
+                        {
+                            var rectangle = new TempRectangle()
+                            {
+                                MinX = x,
+                                MaxX = x,
+                                MinY = y,
+                                MaxY = y
+                            };
+                            rectangles[labels[x, y]] = rectangle;
+                        }
+                        else
+                        {
+                            var rectangle = rectangles[labels[x, y]];
+
+                            if (rectangle.MinX > x)
+                                rectangle.MinX = x;
+                            if (rectangle.MinY > y)
+                                rectangle.MinY = y;
+                            if (rectangle.MaxY < y)
+                                rectangle.MaxY = y;
+                            if (rectangle.MaxX < x)
+                                rectangle.MaxX = x;
+                        }
                         
                     }
                 }
             }
-            
-            return labeledPixels
-                .GroupBy(l => l.Label)
-                .Select(l => CreateRectangle(l))
-                .AsEnumerable();
-        }
 
-        private Rectangle CreateRectangle(IGrouping<int, LabeledPixel> group)
-        {
-            var xs = group.OrderBy(l => l.X);
-            var ys = group.OrderBy(l => l.Y);
-
-            return new Rectangle(xs.First().X, ys.First().Y, xs.Last().X - xs.First().X, ys.Last().Y - ys.First().Y);
+            return rectangles.Select(r => new Rectangle(r.Value.MinX, r.Value.MinY, r.Value.MaxX - r.Value.MinX, r.Value.MaxY - r.Value.MinY));
         }
 
         private void ProcessQueue(int pivotX, int pivotY)
         {
-            var boundedBox = new Rectangle();
-
-
             do
             {
                
@@ -73,35 +102,25 @@ namespace AmIAnA.Imaging
                         if ((neighbor.X >= 0 && neighbor.Y >= 0) &&
                             (neighbor.X < Image.Width && neighbor.Y < Image.Height))
                         {
-                            if (MeetsThreshold(Image.GetPixel(neighbor.X, neighbor.Y))
-                                && !labeledPixels.Any(l => l.X == neighbor.X && l.Y == neighbor.Y))
+                            if (Image.MeetsThreshold(Image.GetPixel(neighbor.X, neighbor.Y))
+                                && labels[neighbor.X, neighbor.Y] == 0 )
                             {
                                 var connectedNeighbor = new LabeledPixel(neighbor.X, neighbor.Y, currentLabel);
 
                                 if (!labeledPixels.Contains(connectedNeighbor))
                                     queue.Enqueue(connectedNeighbor);
-
-                                labeledPixels.Add(connectedNeighbor);
+                                labels[neighbor.X, neighbor.Y] = currentLabel;
                             }
                         }
                     }
                 }
-                
+
             }
             while (queue.Any());
-
             currentLabel++;
         }
 
-        private bool MeetsThreshold(Color color)
-        {
-            var result = color.Name != "White";
-
-            var anotherTest = color.R != Color.White.R && color.B != Color.White.B && color.G != Color.White.G;
-
-            return anotherTest;
-        }
-
+      
         private class LabeledPixel
         {
             public int X { get; set; }
@@ -114,6 +133,14 @@ namespace AmIAnA.Imaging
                 Y = y;
                 Label = label;
             }
+        }
+
+        public class TempRectangle
+        {
+            public int MinX { get; set; }
+            public int MaxX { get; set; }
+            public int MinY { get; set; }
+            public int MaxY { get; set; }
         }
     }
 }

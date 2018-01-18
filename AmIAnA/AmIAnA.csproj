@@ -46,11 +46,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AI\NeuralNetwork.cs" />
+    <Compile Include="Sample.cs" />
+    <Compile Include="ImageSampler.cs" />
     <Compile Include="Imaging\BitmapImage.cs" />
-    <Compile Include="Imaging\FindConnectedComponent.cs" />
+    <Compile Include="Imaging\BlobFinder.cs" />
     <Compile Include="Imaging\IAddressableImage.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\ImageInput.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\ImageInput.Designer.cs">
+      <DependentUpon>ImageInput.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\ImageViewer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -63,6 +71,9 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <EmbeddedResource Include="UI\ImageInput.resx">
+      <DependentUpon>ImageInput.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\ImageViewer.resx">
       <DependentUpon>ImageViewer.cs</DependentUpon>
     </EmbeddedResource>
