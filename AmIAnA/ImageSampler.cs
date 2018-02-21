@@ -100,7 +100,6 @@ namespace AmIAnA
             sw.Start();
             var rectangles = cc.From(image);
             sw.Stop();
-            Console.WriteLine($"{sw.ElapsedMilliseconds} ms");
             TimeToFindLetter = sw.Elapsed;
 
             return rectangles;

@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AI\BackPropNeuralNet.cs" />
     <Compile Include="AI\NeuralNetwork.cs" />
     <Compile Include="Sample.cs" />
     <Compile Include="ImageSampler.cs" />
@@ -67,7 +68,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

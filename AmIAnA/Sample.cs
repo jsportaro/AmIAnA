@@ -12,6 +12,7 @@ namespace AmIAnA
         public Rectangle BoundedRectangle { get; set; }
         public int Pixels { get; set; }
         public int Count { get; set; }
+
         public double NormalizedLuminosity
         {
             get
