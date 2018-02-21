@@ -20,7 +20,7 @@ namespace AmIAnA
         public TimeSpan TimeToFindLetter { get; private set; }
 
         private readonly Sample[,] samples = new Sample[Columns, Rows];
-        private readonly IEnumerable<Rectangle> rectangles;
+        private IEnumerable<Rectangle> rectangles;
         private readonly BitmapImage image;
 
         public ImageSampler(string serializedExample)
@@ -29,6 +29,19 @@ namespace AmIAnA
             var pathToImage = parts[2];
 
             image = new BitmapImage(new Bitmap(pathToImage));
+
+            SampleImage(image);
+
+            IsAnA = parts[0].Trim() == "1";
+        }
+
+        public ImageSampler()
+        {
+
+        }
+
+        public ImageSampler SampleImage(BitmapImage image)
+        {
             rectangles = GetRectangles(image);
 
             foreach (var rec in rectangles)
@@ -63,10 +76,10 @@ namespace AmIAnA
                 }
             }
 
-            IsAnA = parts[0].Trim() == "1";
+            return this;
         }
 
-        public void DrawToViewer(ImageViewer viewer)
+        public void DrawToViewer(IImageViewer viewer)
         {
             viewer.SetImage(image);
             foreach (var rec in rectangles)
@@ -94,11 +107,11 @@ namespace AmIAnA
 
         private IEnumerable<Rectangle> GetRectangles(IAddressableImage image)
         {
-            var cc = new BlobFinder();
+            var blobFinder = new BlobFinder();
 
             var sw = new Stopwatch();
             sw.Start();
-            var rectangles = cc.From(image);
+            var rectangles = blobFinder.From(image);
             sw.Stop();
             TimeToFindLetter = sw.Elapsed;
 

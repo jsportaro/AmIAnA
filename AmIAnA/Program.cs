@@ -19,16 +19,24 @@ namespace AmIAnA
 
     class Program
     {
-        //public static NeuralNetwork neuralNetwork = new NeuralNetwork();
         private static bool prettyPictures = true;
-        private static NeuralNetwork neuralNetwork;
         private static BackPropNeuralNet bnn;
+
+
+        private static Random rnd = new Random(1);
+        private static int numInput = 25;
+        private static int numHidden = 18;
+        private static int numOutput = 2;
+        private static int numWeights = 0;
+
 
         static void Main(string[] args)
         {
-            neuralNetwork = new NeuralNetwork(25, 100, 2);
+            numWeights = (numInput * numHidden) + (numHidden * numOutput) + (numHidden + numOutput);
+            bnn = new BackPropNeuralNet(numInput, numHidden, numOutput);
 
             PrintHelp();
+
             while (true)
             {
                 var action = Console.ReadLine().ToUpper();
@@ -53,24 +61,20 @@ namespace AmIAnA
 
                     Console.WriteLine($"Training data written to {trainingDataPath}");
                 }
+                else if (action == "R")
+                {
+                    var viewer = new Detect(bnn);
+                    Task.Run(() => { Application.Run(viewer); viewer.Show(); });
+                }
                 else if (action == "T")
                 {
                     var path = GetWeightDataPath();
-                    //int maxEpochs = 1000;
-                    //double learnRate = 0.05;
-                    //double momentum = 0.01;
-                    //Console.WriteLine("Setting maxEpochs = " + maxEpochs);
-                    //Console.WriteLine("Setting learnRate = " + learnRate.ToString("F2"));
-                    //Console.WriteLine("Setting momentum  = " + momentum.ToString("F2"));
-
-                    //Console.WriteLine("Starting training");
                     var trainingData = File.ReadAllLines(GetTrainingDataPath()).Select(l =>
                     {
                         var raw = l.Split(new char[] { ',' }).Select(i => Double.Parse(i));
                         return raw.ToArray();
                     }).ToArray();
 
-                    //neuralNetwork.Train(trainingData, maxEpochs, learnRate, momentum);
                     var rnd = new Random(1);
                     int numInput = 25;
                     int numHidden = 18;
@@ -85,7 +89,6 @@ namespace AmIAnA
                     Console.WriteLine("Using hard-coded tanh function for hidden layer activation");
                     Console.WriteLine("Using hard-coded log-sigmoid function for output layer activation");
 
-                    bnn = new BackPropNeuralNet(numInput, numHidden, numOutput);
 
                     Console.WriteLine("\nGenerating random initial weights and bias values");
                     double[] initWeights = new double[numWeights];
@@ -145,17 +148,6 @@ namespace AmIAnA
         private static string GetWeightDataPath()
         {
             return Path.Combine(GetExePath(), ConfigurationManager.AppSettings["weightData"]);
-        }
-
-        private static void Shuffle(int[] sequence, Random rnd)
-        {
-            for (int i = 0; i < sequence.Length; ++i)
-            {
-                int r = rnd.Next(i, sequence.Length);
-                int tmp = sequence[r];
-                sequence[r] = sequence[i];
-                sequence[i] = tmp;
-            }
         }
 
         private static void PrintHelp()

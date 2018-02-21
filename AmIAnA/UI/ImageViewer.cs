@@ -12,7 +12,7 @@ using static AmIAnA.Program;
 
 namespace AmIAnA.UI
 {
-    public partial class ImageViewer : Form
+    public partial class ImageViewer : Form, IImageViewer
     {
         Label[,] labels;
 

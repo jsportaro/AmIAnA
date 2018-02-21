@@ -54,6 +54,13 @@
     <Compile Include="Imaging\IAddressableImage.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\Detect.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Detect.Designer.cs">
+      <DependentUpon>Detect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\IImageViewer.cs" />
     <Compile Include="UI\ImageInput.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -74,6 +81,9 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <EmbeddedResource Include="UI\Detect.resx">
+      <DependentUpon>Detect.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\ImageInput.resx">
       <DependentUpon>ImageInput.cs</DependentUpon>
     </EmbeddedResource>
