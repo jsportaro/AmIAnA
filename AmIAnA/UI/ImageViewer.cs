@@ -58,7 +58,6 @@ namespace AmIAnA.UI
             this.Invoke((MethodInvoker)delegate
             {
                 labels[y, x].Text = sample.NormalizedLuminosity.ToString("F2");
-                //labels[x, y].Text = sample.Count.ToString();
             });
         }
 

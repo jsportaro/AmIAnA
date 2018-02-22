@@ -46,7 +46,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AI\BackPropNeuralNet.cs" />
-    <Compile Include="AI\NeuralNetwork.cs" />
+    <Compile Include="Commands\CreateTrainingCommand.cs" />
+    <Compile Include="Commands\DetectCommand.cs" />
+    <Compile Include="Commands\ICommand.cs" />
+    <Compile Include="Commands\State.cs" />
+    <Compile Include="Commands\TrainCommand.cs" />
     <Compile Include="Sample.cs" />
     <Compile Include="ImageSampler.cs" />
     <Compile Include="Imaging\BitmapImage.cs" />

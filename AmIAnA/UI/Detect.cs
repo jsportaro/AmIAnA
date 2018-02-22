@@ -14,11 +14,9 @@ namespace AmIAnA.UI
 {
     public partial class Detect : Form
     {
-        bool isDrawing;
         BlobFinder blobFinder;
         BackPropNeuralNet bnn;
         bool repaint = true;
-        bool makingLine = false;
         
         public Detect(BackPropNeuralNet bnn)
         {
@@ -56,7 +54,8 @@ namespace AmIAnA.UI
             }
 
             _terminus = Point.Empty;
-            Invalidate();
+            if (repaint)
+                Invalidate();
         }
 
         private void panel1_MouseUp(object sender, MouseEventArgs e)
@@ -67,21 +66,20 @@ namespace AmIAnA.UI
             _origin = Point.Empty;
             _terminus = Point.Empty;
 
-            Refresh();
+            if (repaint)
+                Refresh();
         }
 
         private void panel1_MouseMove(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
                 _terminus = e.Location;
-            Refresh();
+            if (repaint)
+                Refresh();
         }
 
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
-            if (!repaint || !makingLine)
-                return;
-
             foreach (var line in _lines)
             {
                 var pen = new Pen(Brushes.Black, 10F);
@@ -102,8 +100,7 @@ namespace AmIAnA.UI
 
         private void runNeuralNet_Click(object sender, EventArgs e)
         {
-            runNeuralNet.Visible = false;
-            reset.Visible = true;
+            reset.Enabled = true;
 
             var bmp = new BitmapImage(PanelToBitmap());
             var blobs = blobFinder.From(bmp);
@@ -117,11 +114,11 @@ namespace AmIAnA.UI
 
                 if (output[0] > 0.90 && output[1] < 0.05)
                 {
-                    this.BackColor = Color.Green;
+                    BackColor = Color.Green;
                 }
                 else
                 {
-                    this.BackColor = Color.Red;
+                    BackColor = Color.Red;
                 }
             }
             repaint = false;
@@ -130,12 +127,11 @@ namespace AmIAnA.UI
 
         private void reset_Click(object sender, EventArgs e)
         {
-            runNeuralNet.Visible = true;
-            reset.Visible = false;
+            reset.Enabled = false;
             repaint = true;
 
             _lines.Clear();
-
+            BackColor = SystemColors.Control;
             Refresh();
         }
     }
