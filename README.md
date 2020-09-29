@@ -1,7 +1,14 @@
 # Am I an A?
 
 ### What?
-This program does a pretty simply thing.  It lets you draw a picture and then tell you if the image contains a capital A.  
+This program does a pretty simply thing.  It lets you draw a picture and then tell you if the image contains a capital A. 
+
+#### Training
+![Training](Documentation\Training.gif)
+
+#### Detect
+![Detect](Documentation\Detect.gif)
+
 
 ### Why?
 I found [this](https://visualstudiomagazine.com/articles/2013/08/01/neural-network-back-propagation-using-c.aspx) great article by [James McCaffrey](https://www.microsoft.com/en-us/research/people/jammc/) and wanted to build something to get a better understanding of [ANNs](https://en.wikipedia.org/wiki/Artificial_neural_network).  I liked that it was entirely self-contained.  The small surface area and easy to follow (if not exactly performant) code makes it easy to see how these things work under the hood.  As such, currently, the ANN implementation is almost a wholesale ctrl-c ctrl-v job (with some minor changes to deal with a different serialized input vector format).  I'm using his implementation along with a few other resources to gain a better understanding of the why's and how's.  
@@ -20,4 +27,5 @@ Note: This uses WinForms so get your Windows machines ready!
 ### Building 
 
 Did this with Visual Studio 2017 Community Edition
+
 
