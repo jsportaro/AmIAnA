@@ -4,10 +4,10 @@
 This program does a pretty simply thing.  It lets you draw a picture and then tell you if the image contains a capital A. 
 
 #### Training
-![Training](Documentation\Training.gif)
+![Training](./Documentation/Training.gif)
 
 #### Detect
-![Detect](Documentation\Detect.gif)
+![Detect](./Documentation/Detect.gif)
 
 
 ### Why?
