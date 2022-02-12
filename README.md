@@ -28,4 +28,5 @@ Note: This uses WinForms so get your Windows machines ready!
 
 Did this with Visual Studio 2017 Community Edition
 
+Cool, works with Visual Studio 2022 CE too.
 
